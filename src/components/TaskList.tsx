@@ -1,29 +1,121 @@
-import { useState } from 'react'
+/**
+ * IMPORTS
+ */
+import '../styles/tasklist.scss';
+import {useState} from 'react';
+import {FiTrash, FiCheckSquare} from 'react-icons/fi';
 
-import '../styles/tasklist.scss'
 
-import { FiTrash, FiCheckSquare } from 'react-icons/fi'
-
+/**
+ * TYPES
+ */
 interface Task {
   id: number;
   title: string;
   isComplete: boolean;
 }
 
+
+/**
+ * EXPORTS
+ */
+
+/**
+ * I render the task list component.
+ * 
+ * returns: task list component
+ */
 export function TaskList() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
-  function handleCreateNewTask() {
-    // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
+  /**
+   * I handle the creation of a new task
+   * 
+   * returns: nothing
+   */
+  function handleCreateNewTask()
+  {
+    // empty new task title: abort
+    if (newTaskTitle === '')
+    {
+      return;
+    }
+
+    // create task
+    const task: Task = {
+      id: Math.random(),
+      title: newTaskTitle,
+      isComplete: false
+    };
+
+    // add task to array
+    setTasks([...tasks, task]);
+
+    // clean task title
+    setNewTaskTitle('');
   }
 
-  function handleToggleTaskCompletion(id: number) {
-    // Altere entre `true` ou `false` o campo `isComplete` de uma task com dado ID
+  /**
+   * I handle the toggle task completion
+   *
+   * :param id: task id to be toggled
+   * 
+   * returns: nothing
+   */
+  function handleToggleTaskCompletion(id: number)
+  {
+    // get task index
+    const index = tasks.findIndex(task => task.id === id);
+
+    // task not found: abort
+    if (index === -1)
+    {
+      return;
+    }
+
+    // get task value
+    const taskValue = tasks[index];
+
+    // toggle task completion
+    taskValue.isComplete = !taskValue.isComplete;
+
+    // create aux tasks array
+    const newTasks = [...tasks];
+
+    // update task value
+    newTasks[index] = taskValue;
+
+    // update tasks array
+    setTasks([...newTasks]);
   }
 
-  function handleRemoveTask(id: number) {
-    // Remova uma task da listagem pelo ID
+  /**
+   * I handle a task remove
+   *
+   * :param id: task id to be removed
+   * 
+   * returns: nothing
+   */
+  function handleRemoveTask(id: number)
+  {
+    // get task index
+    const index = tasks.findIndex(task => task.id === id);
+
+    // task not found: abort
+    if (index === -1)
+    {
+      return;
+    }
+ 
+    // get tasksValue
+    const tasksValue = [...tasks];
+
+    // remove task from array
+    tasksValue.splice(index, 1);
+
+    // update tasks array
+    setTasks([...tasksValue]);
   }
 
   return (
